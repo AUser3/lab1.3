@@ -175,6 +175,7 @@ int main( int argc, char* argv[] )
 
 		// TODO: add listenfd to readfds.
 		// NOTE: check for FD_SET() in the man page of select().
+		FD_SET( listenfd, &readfds );
 
 		// TODO: loop through all open connections (which you have stored in data structre, e.g. a vector) 
 		// and add them in readfds or writefds.
