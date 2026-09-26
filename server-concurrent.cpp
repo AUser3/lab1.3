@@ -161,6 +161,7 @@ int main( int argc, char* argv[] )
 	// struct for each open connection. E.g. you can use a vector (see Appendix E 
 	// on the lab manual).
 
+	std::vector<ConnectionData> connections;
 
 	// loop forever
 	while( 1 )
