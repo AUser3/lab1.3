@@ -262,14 +262,25 @@ int main( int argc, char* argv[] )
 		// 3) If it is in the writefds set, write send to that socket, using process_client_send().
 		// 4) Close and remove sockets if their connection was terminated.
 		for( size_t i = 0; i < connections.size(); ++i ) {
+			bool connectionOpen = true;
+
 			if( connections[i].state == eConnStateReceiving &&
-				FD_ISSET( connections[i].sock, &readfds ) )
-				{ process_client_recv( connections[i] ); }
+			FD_ISSET( connections[i].sock, &readfds ) )
+			{ connectionOpen = process_client_recv( connections[i] ); }
 
 			else if( connections[i].state == eConnStateSending &&
-				FD_ISSET( connections[i].sock, &writefds ) )
-				{ process_client_send( connections[i] ); }
-		}
+			FD_ISSET( connections[i].sock, &writefds ) )
+			{ connectionOpen = process_client_send( connections[i] ); }
+
+			if( !connectionOpen ) {
+			close( connections[i].sock );
+			connections[i].sock = -1;
+	}
+}
+connections.erase(
+	std::remove_if( connections.begin(), connections.end(), is_invalid_connection ),
+	connections.end()
+);
 
 	}
 
