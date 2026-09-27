@@ -179,6 +179,14 @@ int main( int argc, char* argv[] )
 
 		// TODO: loop through all open connections (which you have stored in data structre, e.g. a vector) 
 		// and add them in readfds or writefds.
+		for( size_t i = 0; i < connections.size(); ++i ) {
+    		if( connections[i].state == eConnStateReceiving )
+    		{ FD_SET( connections[i].sock, &readfds ); }
+    		
+			else if( connections[i].state == eConnStateSending )
+    		{ FD_SET( connections[i].sock, &writefds ); }
+		}
+
 		// NOTE: How to know if a socket should be added in readfds or writefds? Check the "state"
 		// field of ConnectionData for that socket.
 
