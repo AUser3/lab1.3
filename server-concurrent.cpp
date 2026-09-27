@@ -176,15 +176,19 @@ int main( int argc, char* argv[] )
 		// TODO: add listenfd to readfds.
 		// NOTE: check for FD_SET() in the man page of select().
 		FD_SET( listenfd, &readfds );
+		int maxfd = listenfd;
 
 		// TODO: loop through all open connections (which you have stored in data structre, e.g. a vector) 
 		// and add them in readfds or writefds.
 		for( size_t i = 0; i < connections.size(); ++i ) {
     		if( connections[i].state == eConnStateReceiving )
-    		{ FD_SET( connections[i].sock, &readfds ); }
+    			{ FD_SET( connections[i].sock, &readfds ); }
     		
 			else if( connections[i].state == eConnStateSending )
-    		{ FD_SET( connections[i].sock, &writefds ); }
+    			{ FD_SET( connections[i].sock, &writefds ); }
+
+			if( connections[i].sock > maxfd ) 
+				{ maxfd = connections[i].sock; }
 		}
 
 		// NOTE: How to know if a socket should be added in readfds or writefds? Check the "state"
@@ -196,7 +200,7 @@ int main( int argc, char* argv[] )
 		// NOTE 1: we only need one call to select() throughout our program.
 		// NOTE 2: pay attention to the first arguement of select. It should be the 
 		// maximum VALUE of all tracked file descriptors + 1.
-		int ret = select( arg1, arg2, arg3, 0, 0 );
+		int ret = select( maxfd + 1, &readfds, &writefds, 0, 0 );
 		
 
 		if( -1 == ret )
