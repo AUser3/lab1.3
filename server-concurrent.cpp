@@ -252,6 +252,7 @@ int main( int argc, char* argv[] )
 
 
 			// TODO: add connData in your data structure so that you can keep track of that socket.
+			connections.push_back( connData );
 		}
 
 		// TODO: loop through your open sockets.
