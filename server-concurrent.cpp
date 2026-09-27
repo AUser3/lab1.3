@@ -261,7 +261,15 @@ int main( int argc, char* argv[] )
 		// 2) If it is in the readfds set, receive data from that socket, using process_client_recv().
 		// 3) If it is in the writefds set, write send to that socket, using process_client_send().
 		// 4) Close and remove sockets if their connection was terminated.
+		for( size_t i = 0; i < connections.size(); ++i ) {
+			if( connections[i].state == eConnStateReceiving &&
+				FD_ISSET( connections[i].sock, &readfds ) )
+				{ process_client_recv( connections[i] ); }
 
+			else if( connections[i].state == eConnStateSending &&
+				FD_ISSET( connections[i].sock, &writefds ) )
+				{ process_client_send( connections[i] ); }
+		}
 
 	}
 
